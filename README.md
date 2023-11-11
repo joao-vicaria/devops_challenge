@@ -58,3 +58,11 @@ Environment Created.
 Run command `conda activate nameko-devex`
 
 ![conda_env_activate](images/conda_env_activate.png)
+
+#### **Start Service Locally** 
+
+To start backend nameko-devexp services run script in nameko-devexp `./dev_run_backingsvcs.sh`
+
+![services_running_locally](images/locally_backendservices_running.png)
+
+To start nameko services run script in nameko-devexp `./dev_run.sh gateway.service orders.service products.service`
