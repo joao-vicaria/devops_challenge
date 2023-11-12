@@ -39,6 +39,8 @@ Run command `brew install jq` or `choco install jq`
 
 Open Anaconda Prompt.
 
+On Linux I needed run this command to active the environment: `source <home_miniconda3>/etc/profile.d/conda.sh`
+
 Run command `conda env create -f environment_dev.yml`
 
 Returned an error because my conda was seted to python version 3.11
@@ -63,6 +65,40 @@ Run command `conda activate nameko-devex`
 
 To start backend nameko-devexp services run script in nameko-devexp `./dev_run_backingsvcs.sh`
 
-![services_running_locally](images/locally_backendservices_running.png)
+![backendservices_running_locally](images/locally_backendservices_running.png)
+
+NOTE: Because of startup services scripts I changed the environment to a Linux OS, before I was using Microsoft Windows 10. I executed all past steps described in this document, and everything ran the same. 
+
+Continuing on Linux...
 
 To start nameko services run script in nameko-devexp `./dev_run.sh gateway.service orders.service products.service`
+
+![services_running_locally](images/locally_services_running.png)
+
+To run smoke test execute the command `./test/nex-smoketest.sh local`
+
+![nameko-devex_smoketest](images/nameko-devexp_smoketest.png)
+
+To run unit test execute the command `./dev_pytest.sh`
+
+![nameko-devex_smoketest](images/nameko-devexp_unittest.png)
+
+To run in debug mode execute the command `DEBUG=1 ./dev_run.sh gateway.service orders.service products.service`
+
+![nameko-devex_debugmode](images/nameko-devexp_debugmode.png)
+
+To run in performance test execute the command `./test/nex-bzt.sh local`
+
+Link to Result: https://a.blazemeter.com/app/?public-token=Gwi6BuZsx0hG4QN67MPt67sUUIuCZF8EkTe1APHu4OjCrXQsik#reports/r-ext-6551458e4d227555680051/summary
+
+[Performance Test Result Artifacts](performanceTestResult)
+
+![nameko-devex_perftest](images/nameko-devexp_perftest.png)
+
+Running FastAPI integration with nameko in that case we don't need run gateway.service, it is replaced by gateapi, command: `FASTAPI=X ./dev_run.sh orders.service products.service`
+
+![nameko-devex_fastapi](images/nameko-devexp_FastAPI_Integration.png)
+
+Swagger WebAccess running FastAPI.
+
+![nameko-devex_fastapi-webaccess](images/nameko-devexp_FastAPI_WebAccess.png)

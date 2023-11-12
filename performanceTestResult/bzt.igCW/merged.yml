@@ -1,0 +1,86 @@
+---
+execution:
+- concurrency: 1
+  hold-for: 12h
+  ramp-up: 1m
+  scenario: nex
+reporting:
+- dump-xml: stats.xml
+  module: final-stats
+scenarios:
+  nex:
+    data-sources:
+    - ./test/nex-users.csv
+    default-address: http://localhost:8000
+    requests:
+    - assert:
+      - contains:
+        - 200
+        not: false
+        subject: http-code
+      body: "{\n  \"id\": \"${id}-${__javaScript(Math.random())}\",\n  \"title\": \"${title}\",\n  \"passenger_capacity\": ${passenger_capacity},\n  \"maximum_speed\": ${maximum_speed},\n  \"in_stock\": ${in_stock}\n}          \n"
+      extract-jsonpath:
+        default: NOT_FOUND
+        product_id: $.id
+      headers:
+        Content-Type: application/json
+        cache-control: no-cache
+      label: products-create
+      method: POST
+      think-time: uniform(0s, 0s)
+      url: /products
+    - if: '"${product_id}" == "NOT_FOUND"'
+      then:
+      - action: continue
+    - assert:
+      - contains:
+        - 200
+        not: false
+        subject: http-code
+      extract-jsonpath:
+        default: NOT_FOUND
+        product_key: $.id
+      label: product-get
+      method: GET
+      think-time: uniform(0s, 0s)
+      url: /products/${product_id}
+    - assert:
+      - contains:
+        - 200
+        not: false
+        subject: http-code
+      body: |
+        {
+          "order_details": [{"product_id": "${product_id}", "price": "100000.99", "quantity": 1}]
+        }
+      extract-jsonpath:
+        default: NOT_FOUND
+        order_id: $.id
+      headers:
+        Content-Type: application/json
+        cache-control: no-cache
+      label: orders-create
+      method: POST
+      think-time: uniform(0s, 0s)
+      url: /orders
+    - if: '"${order_id}" == "NOT_FOUND"'
+      then:
+      - action: continue
+    - assert:
+      - contains:
+        - 200
+        not: false
+        subject: http-code
+      extract-jsonpath:
+        default: NOT_FOUND
+        order_id: $.id
+      label: order-get
+      method: GET
+      think-time: uniform(0s, 0s)
+      url: /orders/${order_id}
+    - if: '"${order_id}" == "NOT_FOUND"'
+      then:
+      - action: continue
+    variables:
+      hello: world
+

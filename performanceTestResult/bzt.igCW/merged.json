@@ -1,0 +1,139 @@
+{
+ "execution": [
+  {
+   "concurrency": 1,
+   "ramp-up": "1m",
+   "hold-for": "12h",
+   "scenario": "nex"
+  }
+ ],
+ "scenarios": {
+  "nex": {
+   "data-sources": [
+    "./test/nex-users.csv"
+   ],
+   "variables": {
+    "hello": "world"
+   },
+   "default-address": "http://localhost:8000",
+   "requests": [
+    {
+     "url": "/products",
+     "label": "products-create",
+     "think-time": "uniform(0s, 0s)",
+     "method": "POST",
+     "headers": {
+      "cache-control": "no-cache",
+      "Content-Type": "application/json"
+     },
+     "body": "{\n  \"id\": \"${id}-${__javaScript(Math.random())}\",\n  \"title\": \"${title}\",\n  \"passenger_capacity\": ${passenger_capacity},\n  \"maximum_speed\": ${maximum_speed},\n  \"in_stock\": ${in_stock}\n}          \n",
+     "assert": [
+      {
+       "contains": [
+        200
+       ],
+       "subject": "http-code",
+       "not": false
+      }
+     ],
+     "extract-jsonpath": {
+      "product_id": "$.id",
+      "default": "NOT_FOUND"
+     }
+    },
+    {
+     "if": "\"${product_id}\" == \"NOT_FOUND\"",
+     "then": [
+      {
+       "action": "continue"
+      }
+     ]
+    },
+    {
+     "url": "/products/${product_id}",
+     "label": "product-get",
+     "think-time": "uniform(0s, 0s)",
+     "method": "GET",
+     "assert": [
+      {
+       "contains": [
+        200
+       ],
+       "subject": "http-code",
+       "not": false
+      }
+     ],
+     "extract-jsonpath": {
+      "product_key": "$.id",
+      "default": "NOT_FOUND"
+     }
+    },
+    {
+     "url": "/orders",
+     "label": "orders-create",
+     "think-time": "uniform(0s, 0s)",
+     "method": "POST",
+     "headers": {
+      "cache-control": "no-cache",
+      "Content-Type": "application/json"
+     },
+     "body": "{\n  \"order_details\": [{\"product_id\": \"${product_id}\", \"price\": \"100000.99\", \"quantity\": 1}]\n}\n",
+     "assert": [
+      {
+       "contains": [
+        200
+       ],
+       "subject": "http-code",
+       "not": false
+      }
+     ],
+     "extract-jsonpath": {
+      "order_id": "$.id",
+      "default": "NOT_FOUND"
+     }
+    },
+    {
+     "if": "\"${order_id}\" == \"NOT_FOUND\"",
+     "then": [
+      {
+       "action": "continue"
+      }
+     ]
+    },
+    {
+     "url": "/orders/${order_id}",
+     "label": "order-get",
+     "think-time": "uniform(0s, 0s)",
+     "method": "GET",
+     "assert": [
+      {
+       "contains": [
+        200
+       ],
+       "subject": "http-code",
+       "not": false
+      }
+     ],
+     "extract-jsonpath": {
+      "order_id": "$.id",
+      "default": "NOT_FOUND"
+     }
+    },
+    {
+     "if": "\"${order_id}\" == \"NOT_FOUND\"",
+     "then": [
+      {
+       "action": "continue"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "reporting": [
+  {
+   "module": "final-stats",
+   "dump-xml": "stats.xml"
+  }
+ ]
+}
