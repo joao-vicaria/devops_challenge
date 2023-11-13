@@ -152,3 +152,19 @@ Install Epinio CLI
     - brew install epinio
 
 ![epinio_installed](images/epinio_installed.png)
+
+Epinio Login
+
+![epinio_login](images/epinio_login.png)
+
+Epinio Sample Install
+
+    - git clone https://github.com/epinio/epinio.git
+    - cd epinio/assets/
+    - epinio push --name sample --path sample-app
+
+![epinio_sample_install](images/epinio_sample_install.png)
+
+Epinio Sample Test/Return
+
+![epinio_sample_return](images/epinio_sample_curlreturn.png)
