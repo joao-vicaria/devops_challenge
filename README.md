@@ -155,6 +155,8 @@ Install Epinio CLI
 
 Epinio Login
 
+    - epinio login -u admin 'https://epinio.<INTERNAL-IP>.sslip.io'
+
 ![epinio_login](images/epinio_login.png)
 
 Epinio Sample Install
@@ -168,3 +170,22 @@ Epinio Sample Install
 Epinio Sample Test/Return
 
 ![epinio_sample_return](images/epinio_sample_curlreturn.png)
+
+### Exercise 03 - [Challenge](challenge_description/DevOps_Engineer_-_Case_Study.pdf)
+
+**Prepare Environment**
+
+Login epinio
+
+`epinio login -u admin https://epinio.<INTERNAL_IP>.sslip.io`
+
+ Export conda envs
+
+`source /home/<user>/miniconda3/etc/profile.d/conda.sh`
+
+Activate nameko-devex environment
+
+`conda activate nameko-devex` 
+
+![ex3_prepareenv](images/ex3_prepareenv.png)
+
