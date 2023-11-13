@@ -9,6 +9,9 @@ I read the entire documentation attached at [challenge doc](challenge_descriptio
  - [twelve-factor app](https://12factor.net/)
  - [nameko utilization](https://blog.geekhunter.com.br/python-microservices/)
  - [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/environments.html)
+ - [how-to-build-microservices-with-nameko](https://www.coditation.com/blog/how-to-build-microservices-with-nameko)
+ - [k3d_install](https://k3d.io/v5.6.0/#installation)
+ - [epinio_install](https://docs.epinio.io/installation/other_inst_scenarios/install_epinio_on_k3d)
 
 NOTE: I changed the format of that topic because the list of tools and concepts was growing while I was going deep in the challenge :D.
 
@@ -102,3 +105,50 @@ Running FastAPI integration with nameko in that case we don't need run gateway.s
 Swagger WebAccess running FastAPI.
 
 ![nameko-devex_fastapi-webaccess](images/nameko-devexp_FastAPI_WebAccess.png)
+
+### Exercise 02 - [Challenge](challenge_description/DevOps_Engineer_-_Case_Study.pdf)
+
+The Epinio will be installed using K3D and docker, the K3D install will be done following the [K3D_Install_Instruction.](https://k3d.io/v5.6.0/#installation)
+
+#### **K3D Install:**
+
+    - wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+    - k3d cluster create epinio
+    - kubectl cluster-info
+    - kubectl get nodes
+
+![k3d_install](images/k3d_install.png)
+![k3d_cluster_create](images/k3d_cluster_created.png)
+
+#### **Epinio Install:**
+
+Install ingress-controller:
+
+    - helm repo add nginx-stable https://helm.nginx.com/stable
+    - helm repo update
+    - helm upgrade --install nginx-ingress --namespace nginx-ingress nginx-stable/nginx-ingress \
+        --set controller.setAsDefaultIngress=true \
+        --create-namespace
+
+Install Cert-Manager:
+    
+    - helm repo add jetstack https://charts.jetstack.io
+    - helm repo update
+    - helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager  \
+        --set installCRDs=true \
+        --set extraArgs={--enable-certificate-owner-ref=true} \
+        --create-namespace   
+
+Install Epinio
+    
+    - helm repo add epinio https://epinio.github.io/helm-charts
+    - helm repo update
+    - helm upgrade --install epinio epinio/epinio \
+        --namespace epinio --create-namespace \
+        --set global.domain=<INTERNAL-IP>.sslip.io
+
+Install Epinio CLI
+
+    - brew install epinio
+
+![epinio_installed](images/epinio_installed.png)
