@@ -1,6 +1,6 @@
 # DevOps_Challenge
 
-This document/repository approaches my path through the challenge propose by [Ilia](https://ilia.digital/en/).
+This document/repository approaches my journey through the challenge propose by [Ilia](https://ilia.digital/en/).
 The challenge can be consulted [here](challenge_description/DevOps_Engineer_-_Case_Study.pdf).
 
 ## Fist of all
@@ -175,11 +175,11 @@ Epinio Sample Test/Return
 
 **Prepare Environment**
 
-Login epinio
+Epinio Login
 
 `epinio login -u admin https://epinio.<INTERNAL_IP>.sslip.io`
 
- Export conda envs
+Export conda envs
 
 `source /home/<user>/miniconda3/etc/profile.d/conda.sh`
 
@@ -188,4 +188,28 @@ Activate nameko-devex environment
 `conda activate nameko-devex` 
 
 ![ex3_prepareenv](images/ex3_prepareenv.png)
+
+**Run Application Push**
+
+After Epinio Login, push application using the command:
+
+`epinio push -n <application-name> manifest.yml`
+
+![ex3_app_epinio_push](images/ex3_app_epinio_push01.png)
+.
+.
+.
+![ex3_app_epinio_push](images/ex3_app_epinio_push02.png)
+
+**NOTE:** My WSL environment is not so good then I'm creating a new test environment in a VM Linux instance.
+
+Application Running on Cluster
+
+
+
+**Running Application Tests**
+
+
+
+
 
