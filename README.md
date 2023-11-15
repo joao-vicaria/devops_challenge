@@ -179,6 +179,13 @@ Epinio Login
 In the process os create a new environment using a Linux VM Instance, I started to create a [setup_script](automation_setup/setup.sh) for prepare the machine and I'm trying deploy nameko microservices successfully
  and I'm testing new epinio concepts to do these nameko application deployments. For example, creating an Epinio manifest.
 
+**Install nameko-apps Dependencies**
+
+`helm repo add bitnami https://charts.bitnami.com/bitnami`
+helm repo update`
+
+
+
 **Run Application Push**
 
 [Epinio-Manifest](automation_setup/epinio-manifest.yml)

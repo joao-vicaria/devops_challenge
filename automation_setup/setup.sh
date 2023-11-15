@@ -69,9 +69,11 @@ brew install epinio
 
 echo "Push nameko-sample to Epinio"
 epinio login -u admin -p password https://epinio.$INTERNAL_IP.sslip.io
-cd ~/nameko-devexp
-sed '9 s/^# //' manifest.yml
-sed '10 s/^# //' manifest.yml
-sed '11 s/^# //' manifest.yml
-sed '12 s/^# //' manifest.yml
-epinio push -n namekoapp manifest.yml
+sudo helm repo add bitnami https://charts.bitnami.com/bitnami
+sudo helm repo update
+sudo helm install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitmq -n workspace
+sudo helm install redis oci://registry-1.docker.io/bitnamicharts/redis -n workspace
+sudo helm install postgresql oci://registry-1.docker.io/bitnamicharts/postgresql --set auth.postgresPaswword=password --set auth.database=orders -n workspace
+
+
+epinio push -n namekoapp epinio-manifest.yml

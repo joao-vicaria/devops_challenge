@@ -14,11 +14,19 @@
 name: orders
 configuration:
   instances: 1
+  environment:
+    AMQP_URI: "amqp://guest:guest@rabbitmq:5672"
+    POSTGRES_URI: "postgresql://postgres:postgres@lpostgresql:5432/orders"
+    REDIS_URI: "redis://redis-headless:6379/dev"
 origin:
-  path: ./orders
+  path: ./orders/orders
 ---
 name: products
 configuration:
   instances: 1
+  environment:
+    AMQP_URI: "amqp://guest:guest@rabbitmq:5672"
+    POSTGRES_URI: "postgresql://postgres:postgres@lpostgresql:5432/orders"
+    REDIS_URI: "redis://redis-headless:6379/dev"
 origin:
-  path: ./products
+  path: ./products/products
