@@ -1,0 +1,24 @@
+---
+#name: zanzibar
+#configuration:
+#  instances: 333
+#  configurations:
+#  - snafu
+#  environment:
+#    DOGMA: "no"
+#staging:
+#  builder: "paketobuildpacks/builder:tiny"
+#origin:
+#  path: /somewhere/over/there
+
+name: orders
+configuration:
+  instances: 1
+origin:
+  path: ./orders
+---
+name: products
+configuration:
+  instances: 1
+origin:
+  path: ./products

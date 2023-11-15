@@ -2,8 +2,9 @@
 
 echo "APT install dependencies"
 sudo apt install -y wget git-all
+sudo export PATH=$PATH:/home/linuxbrew/.linuxbrew/bin
 
-echo "Install Kuybectl"
+echo "Install Kubectl"
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
