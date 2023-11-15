@@ -12,6 +12,9 @@ I read the entire documentation attached at [challenge doc](challenge_descriptio
  - [how-to-build-microservices-with-nameko](https://www.coditation.com/blog/how-to-build-microservices-with-nameko)
  - [k3d_install](https://k3d.io/v5.6.0/#installation)
  - [epinio_install](https://docs.epinio.io/installation/other_inst_scenarios/install_epinio_on_k3d)
+ - [epinio_manifests](https://docs.epinio.io/references/manifests)
+ - [epinio_push_details](https://docs.epinio.io/explanations/detailed-push-process)
+ - [epinio_advanced_topics](https://docs.epinio.io/explanations/advanced)
 
 NOTE: I changed the format of that topic because the list of tools and concepts was growing while I was going deep in the challenge :D.
 
@@ -171,33 +174,26 @@ Epinio Login
 
 `epinio login -u admin https://epinio.<INTERNAL_IP>.sslip.io`
 
-Export conda envs
+**NOTE:** My WSL environment is not so good then I'm creating a new test environment in a Linux VM Instance.
 
-`source /home/<user>/miniconda3/etc/profile.d/conda.sh`
-
-Activate nameko-devex environment
-
-`conda activate nameko-devex` 
-
-![ex3_prepareenv](images/ex3_prepareenv.png)
+In the process os create a new environment using a Linux VM Instance, I started to create a [setup_script](automation_setup/setup.sh) for prepare the machine and I'm trying deploy nameko microservices successfully
+ and I'm testing new epinio concepts to do these nameko application deployments. For example, creating an Epinio manifest.
 
 **Run Application Push**
 
+[Epinio-Manifest](automation_setup/epinio-manifest.yml)
+
 After Epinio Login, push application using the command:
 
-`epinio push -n <application-name> manifest.yml`
+`epinio push -n <application-name> epinio-manifest.yml`
 
-![ex3_app_epinio_push](images/ex3_app_epinio_push01.png)
+![ex3_app_epinio_push](images/ex3_app_epinio_push01.png) #ChangeImage It's wrong
 .
 .
 .
-![ex3_app_epinio_push](images/ex3_app_epinio_push02.png)
+![ex3_app_epinio_push](images/ex3_app_epinio_push02.png) #ChangeImage It's wrong
 
-**NOTE:** My WSL environment is not so good then I'm creating a new test environment in a VM Linux instance.
-
-Application Running on Cluster
-
-
+Nameko Applications Running on Cluster
 
 **Running Application Tests**
 
