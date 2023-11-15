@@ -122,14 +122,6 @@ The Epinio will be installed using K3D and docker, the K3D install will be done 
 
 #### **Epinio Install:**
 
-Install ingress-controller:
-
-    - helm repo add nginx-stable https://helm.nginx.com/stable
-    - helm repo update
-    - helm upgrade --install nginx-ingress --namespace nginx-ingress nginx-stable/nginx-ingress \
-        --set controller.setAsDefaultIngress=true \
-        --create-namespace
-
 Install Cert-Manager:
     
     - helm repo add jetstack https://charts.jetstack.io
