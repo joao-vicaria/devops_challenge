@@ -68,13 +68,14 @@ push-images:
 
 # epinio
 epinio_target:
+	epinio namespace create $(EPINIO_APP)
 	epinio target $(EPINIO_APP)
 
 epinio_cs_postgres:
 	epinio service create postgresql-dev $(EPINIO_APP)_devPostgres
 	echo "Waiting for service to be created"
 	for i in $$(seq 1 90); do \
-		epinio service show $(EPINIO_APP)_devPostgres | grep  "create succeeded" 2> /dev/null && break; \
+		epinio service list | grep -i $(EPINIO_APP)_devPostgres | grep  "deployed" 2> /dev/null && break; \
 			sleep 1; \
 	done 
 
@@ -82,7 +83,7 @@ epinio_ds_postgres:
 	epinio service delete $(EPINIO_APP)_devPostgres
 	echo "Waiting for service to be deleted"
 	for i in $$(seq 1 90); do \
-		epinio service show $(EPINIO_APP)_devPostgres | grep  "delete in progress" 2> /dev/null || break; \
+		epinio service list|grep -i $(EPINIO_APP)_devPostgres | grep  "delete in progress" 2> /dev/null || break; \
 			sleep 1; \
 	done 
 
@@ -90,7 +91,7 @@ epinio_cs_rabbitmq:
 	epinio service create rabbitmq-dev $(EPINIO_APP)_devRabbit
 	echo "Waiting for service to be created"
 	for i in $$(seq 1 90); do \
-		epinio service show $(EPINIO_APP)_devRabbit | grep  "create succeeded" 2> /dev/null && break; \
+		epinio service list| grep -i $(EPINIO_APP)_devRabbit | grep  "deployed" 2> /dev/null && break; \
 			sleep 1; \
 	done 
 
@@ -98,7 +99,7 @@ epinio_ds_rabbitmq:
 	epinio service delete $(EPINIO_APP)_devRabbit
 	echo "Waiting for service to be deleted"
 	for i in $$(seq 1 90); do \
-		epinio service show $(EPINIO_APP)_devRabbit | grep  "delete in progress" 2> /dev/null || break; \
+		epinio service list|grep -i $(EPINIO_APP)_devRabbit | grep  "delete in progress" 2> /dev/null || break; \
 			sleep 1; \
 	done 
 
@@ -106,7 +107,7 @@ epinio_cs_redis:
 	epinio service create redis-dev $(EPINIO_APP)_devRedis
 	echo "Waiting for service to be created"
 	for i in $$(seq 1 90); do \
-		epinio service show $(EPINIO_APP)_devRedis | grep  "create succeeded" 2> /dev/null && break; \
+		epinio service list|grep -i $(EPINIO_APP)_devRedis | grep  "deployed" 2> /dev/null && break; \
 			sleep 1; \
 	done 
 
@@ -114,22 +115,21 @@ epinio_ds_redis:
 	epinio service delete $(EPINIO_APP)_devRedis
 	echo "Waiting for service to be deleted"
 	for i in $$(seq 1 90); do \
-		epinio service show $(EPINIO_APP)_devRedis | grep  "delete in progress" 2> /dev/null || break; \
+		epinio service list|grep -i $(EPINIO_APP)_devRedis | grep  "delete in progress" 2> /dev/null || break; \
 			sleep 1; \
 	done 
 
 deployEPINIO: epinio_target epinio_cs_postgres epinio_cs_rabbitmq epinio_cs_redis
-	epinio app delete $(EPINIO_APP)
 	# create environment.yml file from environment_dev.yml file
 	cat environment_dev.yml | grep -v '#dev' > environment.yml
 	epinio push -n $(EPINIO_APP)
-	rm -f environment.yml
-
 	epinio service bind $(EPINIO_APP)_devPostgres $(EPINIO_APP)
-	epinio service bind $(EPINIO_APP)_devRabbit $(EPINIO_APP)
 	epinio service bind $(EPINIO_APP)_devRedis $(EPINIO_APP)
+	epinio service bind $(EPINIO_APP)_devRabbit $(EPINIO_APP)
+	rm environment.yml
 
-undeployEPINIO: epinio_target
+undeployEPINIO:
+	epinio target $(EPINIO_APP)
 	epinio app delete $(EPINIO_APP)
 	$(MAKE) epinio_ds_postgres
 	$(MAKE) epinio_ds_rabbitmq
