@@ -15,6 +15,7 @@ I read the entire documentation attached at [challenge doc](challenge_descriptio
  - [epinio_manifests](https://docs.epinio.io/references/manifests)
  - [epinio_push_details](https://docs.epinio.io/explanations/detailed-push-process)
  - [epinio_advanced_topics](https://docs.epinio.io/explanations/advanced)
+ - [epinio_services(bind)](https://docs.epinio.io/references/services)
 
 NOTE: I changed the format of that topic because the list of tools and concepts was growing while I was going deep in the challenge :D.
 
@@ -179,28 +180,55 @@ Epinio Login
 In the process os create a new environment using a Linux VM Instance, I started to create a [setup_script](automation_setup/setup.sh) for prepare the machine and I'm trying deploy nameko microservices successfully
  and I'm testing new epinio concepts to do these nameko application deployments. For example, creating an Epinio manifest.
 
-**Install nameko-apps Dependencies**
-
-`helm repo add bitnami https://charts.bitnami.com/bitnami`
-helm repo update`
-
-
-
 **Run Application Push**
-
-[Epinio-Manifest](automation_setup/epinio-manifest.yml)
 
 After Epinio Login, push application using the command:
 
-`epinio push -n <application-name> epinio-manifest.yml`
+`epinio push -n <application-name>`
 
-![ex3_app_epinio_push](images/ex3_app_epinio_push01.png) #ChangeImage It's wrong
+![ex3_app_epinio_push](images/ex3_app_epinio_push01.png)
 .
 .
 .
-![ex3_app_epinio_push](images/ex3_app_epinio_push02.png) #ChangeImage It's wrong
+![ex3_app_epinio_push](images/ex3_app_epinio_push02.png)
 
-Nameko Applications Running on Cluster
+Nameko Applications Running on Cluster with error
+
+![ex3_app_epinio_error](images/ex3_app_epinio_error.png)
+
+To solve it, we will bind services rabbitMQ, redis and postgresql to nameko app deployment
+
+List services catalog:
+
+`epinio service catalog`
+
+Create services dependencies for nameko-app (postgresql, rabbitmq and redis):
+
+`epinio service create postgresql-dev devPostgres`
+
+`epinio service create rabbitmq-dev devRabbit`
+
+`epinio service create redis-dev devRedis`
+
+![ex3_app_epinio_services](images/ex3_app_epinio_services.png)
+
+Show Services Created:
+
+`epinio service show devPostgres`
+
+`epinio service show devRabbit`
+
+`epinio service show devRedis`
+
+Bind the services to nameko-app:
+
+`epinio service bind devPostgres nameko`
+
+`epinio service bind devRabbit nameko`
+
+`epinio service bind devRedis nameko`
+
+![ex3_app_epinio_bind](images/ex3_app_epinio_bind.png)
 
 **Running Application Tests**
 
