@@ -2,25 +2,44 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nameko-test
-  namespace: nameko
+  namespace: workspace
 spec:
-#  initContainer:
-#    - name: run-py
-#      image: python:3.7.17-alpine
-#      command: ['python', '-c']
-#      args:
-#        - |
-#          import psycopg2 as db
-#          p=postgres
-#          con=db.connect(dbname=p,host=x1e2860a294caa5e6507abe673a53-postgresql-hl.nameko.svc.cluster.local:5432,user=p,password=8vKe5tZJRu
-#          con.autocommit=True
-#          con.cursor().execute('CREATE DATABASE orders') 2> /dev/null
   containers:
-    - name: nameko-app
+    - name: nameko
       env:
         - name: PORT
           value: "8080"
-      image: 127.0.0.1:30500/apps/nameko-nameko:02448d2977911e75
+        - name: AMQP_URI
+          value: "amqp://user:q2WtVDBFtgATh0HN@rabbitmq-headless:5672"
+        - name: DB_HOST
+          value: "postgresql-hl"
+        - name: DB_NAME
+          value: "orders"
+        - name: DB_PASSWORD
+          value: "postgres"
+        - name: DB_USER
+          value: "postgres"
+        - name: POSTGRES_URI
+          value: "postgresql://postgres:postgres@postgresql-hl:5432/orders"
+        - name: RABBIT_HOST
+          value: "rabbitmq-headless"
+        - name: RABBIT_PASSWORD
+          value: "q2WtVDBFtgATh0HN"
+        - name: RABBIT_PORT
+          value: "5672"
+        - name: RABBIT_USER
+          value: "user"
+        - name: REDIS_HOST
+          value: "redis-master"
+        - name: REDIS_INDEX
+          value: "11"
+        - name: REDIS_PASSWORD
+          value: "u1XWr5pzQp"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_URI
+          value: "redis://redis:u1XWr5pzQp@redis-master:6379/dev"
+      image: 127.0.0.1:30500/apps/workspace-nameko:6b1dfbb2d17e118e
       imagePullPolicy: Always
       ports:
       - containerPort: 8080
@@ -32,24 +51,17 @@ spec:
       - mountPath: /configurations/nameko-cfg
         name: nameko-cfg
         readOnly: true
-      - mountPath: /configurations/nameko_devPostgres
-        name: x1e2860a294caa5e6507abe673a53-postgresql
-        readOnly: true
   dnsPolicy: ClusterFirst
   restartPolicy: Always
   schedulerName: default-scheduler
   securityContext: {}
-  serviceAccount: nameko
-  serviceAccountName: nameko
+  serviceAccount: workspace
+  serviceAccountName: workspace
   volumes:
   - name: nameko-cfg
     secret:
       defaultMode: 420
       secretName: nameko-cfg
-  - name: x1e2860a294caa5e6507abe673a53-postgresql
-    secret:
-      defaultMode: 420
-      secretName: x1e2860a294caa5e6507abe673a53-postgresql
 ---
 apiVersion: v1
 kind: Service
@@ -58,7 +70,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
   name: nameko-test
-  namespace: nameko
+  namespace: workspace
 spec:
   internalTrafficPolicy: Cluster
   ipFamilies:

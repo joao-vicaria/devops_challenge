@@ -1,32 +1,70 @@
 ---
-#name: zanzibar
+#name: nameko
 #configuration:
-#  instances: 333
-#  configurations:
-#  - snafu
+#  instances: 1
 #  environment:
-#    DOGMA: "no"
+#    AMQP_URI: "amqp://user:q2WtVDBFtgATh0HN@rabbitmq-headless:5672"
+#    POSTGRES_URI: "postgresql://postgres:postgres@postgresql-hl:5432/orders"
+#    REDIS_URI: "redis://redis:u1XWr5pzQp@redis-master:6379/dev"
+#    DB_USER: "postgres"
+#    DB_PASSWORD: "postgres"
+#    DB_HOST: "postgresql-hl"
+#    DB_NAME: "orders"
+#    RABBIT_USER: "user"
+#    RABBIT_PASSWORD: "q2WtVDBFtgATh0HN"
+#    RABBIT_HOST: "rabbitmq-headless"
+#    RABBIT_PORT: "5672"
+#    REDIS_PASSWORD: "u1XWr5pzQp"
+#    REDIS_HOST: "redis-master"
+#    REDIS_PORT: "6379"
+#    REDIS_INDEX: "11"
+#  configurations:
+#  - nameko-cfg
 #staging:
-#  builder: "paketobuildpacks/builder:tiny"
-#origin:
-#  path: /somewhere/over/there
+#  builder: "paketobuildpacks/builder-jammy-full:0.3.299"
 
+#name: orders
+#configuration:
+#  instances: 1
+#  environment:
+#    AMQP_URI: "amqp://guest:guest@rabbitmq:5672"
+#    POSTGRES_URI: "postgresql://postgres:postgres@lpostgresql:5432/orders"
+#    REDIS_URI: "redis://redis-headless:6379/dev"
+#origin:
+#  path: ./orders/orders
+#---
 name: orders
 configuration:
   instances: 1
   environment:
-    AMQP_URI: "amqp://guest:guest@rabbitmq:5672"
-    POSTGRES_URI: "postgresql://postgres:postgres@lpostgresql:5432/orders"
-    REDIS_URI: "redis://redis-headless:6379/dev"
+    AMQP_URI: "amqp://user:q2WtVDBFtgATh0HN@rabbitmq-headless:5672"
+    POSTGRES_URI: "postgresql://postgres:postgres@postgresql-hl:5432/orders"
+    REDIS_URI: "redis://redis:u1XWr5pzQp@redis-master:6379/dev"
+    DB_USER: "postgres"
+    DB_PASSWORD: "postgres"
+    DB_HOST: "postgresql-hl"
+    DB_NAME: "orders"
+    RABBIT_USER: "user"
+    RABBIT_PASSWORD: "q2WtVDBFtgATh0HN"
+    RABBIT_HOST: "rabbitmq-headless"
+    RABBIT_PORT: "5672"
+    REDIS_PASSWORD: "u1XWr5pzQp"
+    REDIS_HOST: "redis-master"
+    REDIS_PORT: "6379"
+    REDIS_INDEX: "11"
+  configurations:
+  - nameko-cfg
 origin:
-  path: ./orders/orders
----
-name: products
-configuration:
-  instances: 1
-  environment:
-    AMQP_URI: "amqp://guest:guest@rabbitmq:5672"
-    POSTGRES_URI: "postgresql://postgres:postgres@lpostgresql:5432/orders"
-    REDIS_URI: "redis://redis-headless:6379/dev"
-origin:
-  path: ./products/products
+  path: ./orders
+#staging:
+#  builder: "paketobuildpacks/builder-jammy-full:0.3.299"
+#---
+#name: products
+#configuration:
+#  instances: 1
+#  environment:
+#    AMQP_URI: "amqp://guest:guest@rabbitmq:5672"
+#    POSTGRES_URI: "postgresql://postgres:postgres@lpostgresql:5432/orders"
+#    REDIS_URI: "redis://redis-headless:6379/dev"
+#origin:
+#  path: ./products/products
