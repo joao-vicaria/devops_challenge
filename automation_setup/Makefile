@@ -68,11 +68,11 @@ push-images:
 
 # epinio
 epinio_target:
-	epinio namespace create $(EPINIO_APP)
-	epinio target $(EPINIO_APP)
+	#epinio namespace create $(EPINIO_APP)
+	epinio target workspace
 
 epinio_cs_postgres:
-	epinio service create postgresql-dev $(EPINIO_APP)_devPostgres
+	epinio service create postgresql-dev $(EPINIO_APP)_devPostgres -v globalPostgresqlAuthDatabase=orders
 	echo "Waiting for service to be created"
 	for i in $$(seq 1 90); do \
 		epinio service list | grep -i $(EPINIO_APP)_devPostgres | grep  "deployed" 2> /dev/null && break; \
@@ -119,18 +119,29 @@ epinio_ds_redis:
 			sleep 1; \
 	done 
 
-deployEPINIO: epinio_target epinio_cs_postgres epinio_cs_rabbitmq epinio_cs_redis
+epinio_push_prepare:
+	./export_vars.sh
+
+prepareEPINIO: epinio_target epinio_cs_postgres epinio_cs_rabbitmq epinio_cs_redis
+
+deployEPINIO:
 	# create environment.yml file from environment_dev.yml file
 	cat environment_dev.yml | grep -v '#dev' > environment.yml
-	epinio push -n $(EPINIO_APP)
-	epinio service bind $(EPINIO_APP)_devPostgres $(EPINIO_APP)
-	epinio service bind $(EPINIO_APP)_devRedis $(EPINIO_APP)
-	epinio service bind $(EPINIO_APP)_devRabbit $(EPINIO_APP)
+	#epinio push -n $(EPINIO_APP)-orders -p ./orders -e DB_PASSWORD="8vKe5tZJRu" -e DB_HOST="x1e2860a294caa5e6507abe673a53-postgresql-hl.nameko.svc.cluster.local" -e RABBIT_PASSWORD="j5CyCdYePmI2einq" -e RABBIT_HOST="xc1fc144d1d2668192159dcbf4621-rabbitmq-headless.nameko.svc.cluster.local" -e RABBIT_USER="user"
+	#epinio push -n $(EPINIO_APP)-products -p ./products -e RABBIT_PASSWORD="j5CyCdYePmI2einq" -e RABBIT_USER="user" -e RABBIT_HOST="xc1fc144d1d2668192159dcbf4621-rabbitmq-headless.nameko.svc.cluster.local" -e REDIS_PASSWORD="DT7BFHIBZO" -e REDIS_HOST="x9c293822a24aebee3148c60a3c24-redis-headless.nameko.svc.cluster.local"
+	epinio configuration create nameko-cfg -f config_vars.txt
+	epinio push -n $(EPINIO_APP) -b nameko-cfg
+	#epinio service bind $(EPINIO_APP)_devPostgres $(EPINIO_APP)
+	#epinio service bind $(EPINIO_APP)_devRedis $(EPINIO_APP)
+	#epinio service bind $(EPINIO_APP)_devRabbit $(EPINIO_APP)
 	rm environment.yml
+	#epinio app restage $(EPINIO_APP)
 
 undeployEPINIO:
-	epinio target $(EPINIO_APP)
+	epinio target workspace
+	#$(MAKE) epinio_ds_postgres
+	#$(MAKE) epinio_ds_rabbitmq
+	#$(MAKE) epinio_ds_redis
+	epinio configuration delete nameko-cfg
 	epinio app delete $(EPINIO_APP)
-	$(MAKE) epinio_ds_postgres
-	$(MAKE) epinio_ds_rabbitmq
-	$(MAKE) epinio_ds_redis
+	#epinio namespace delete $(EPINIO_APP)

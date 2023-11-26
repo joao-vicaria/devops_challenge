@@ -126,6 +126,11 @@ The Epinio will be installed using K3D and docker, the K3D install will be done 
 
 #### **Epinio Install:**
 
+Install Traefik Ingress-Controller:
+
+    - kubectl create ns traefik
+    - helm install traefik traefik/traefik --namespace traefik
+
 Install Cert-Manager:
     
     - helm repo add jetstack https://charts.jetstack.io
@@ -141,7 +146,7 @@ Install Epinio
     - helm repo update
     - helm upgrade --install epinio epinio/epinio \
         --namespace epinio --create-namespace \
-        --set global.domain=<INTERNAL-IP>.sslip.io
+        --set global.domain="<EXTERNAL-IP>.sslip.io"
 
 Install Epinio CLI
 
